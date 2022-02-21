@@ -1,0 +1,5 @@
+{"name": "Password Generator",
+    "description": "The frontend of the password management system",
+    "version": "1.0",
+    "manifest_version": 3
+}
