@@ -1,47 +1,48 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-
+	"io/ioutil"
+	"log"
 	"main/excel"
+	"net/http"
 
-	"github.com/xuri/excelize/v2"
+	"github.com/gorilla/mux"
 )
 
-func main() {
-	//excel.WriteExcelInit()
-	excel.ExcelAddRecord("Halil", "emirleroglu")
+type record struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Domain   string `json:"domain"`
 }
 
-func readSheet() {
-	f, err := excelize.OpenFile("Book1.xlsx")
+func main() {
+	excel.WriteExcelInit()
+	//var x = excel.ExcelAddRecord("emirlerogluhalil@gmail.com", "12345", "github.com")
+	//fmt.Println(x)
+	//email, pass := excel.ReadExcel("github.com")
+	//fmt.Println(email, pass)
+
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/addRecord", addRecord).Methods("POST")
+	log.Fatal(http.ListenAndServe(":8080", router))
+}
+
+func addRecord(w http.ResponseWriter, r *http.Request) {
+	var myRecord record
+	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
 	}
-	defer func() {
-		// Close the spreadsheet.
-		if err := f.Close(); err != nil {
-			fmt.Println(err)
-		}
-	}()
-	// Get value from cell by given worksheet name and axis.
-	cell, err := f.GetCellValue("Sheet1", "B2")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(cell)
-	// Get all the rows in the Sheet1.
-	rows, err := f.GetRows("Sheet1")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	for _, row := range rows {
-		for _, colCell := range row {
-			fmt.Print(colCell, "\t")
-		}
-		fmt.Println()
-	}
+	json.Unmarshal(reqBody, &myRecord)
+
+	excel.ExcelAddRecord(myRecord.Email, myRecord.Password, myRecord.Domain)
+	w.WriteHeader(http.StatusCreated)
+
+	json.NewEncoder(w).Encode(myRecord)
+}
+
+func getRecord(w http.ResponseWriter, r *http.Request) {
+
 }
