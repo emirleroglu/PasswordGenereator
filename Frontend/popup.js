@@ -1,5 +1,6 @@
 let createPassBut=document.getElementById("createPass");
 let copyPass=document.getElementById("passwordLabel");
+let addRecord=document.getElementById("addRecord");
 
 
 
@@ -27,5 +28,34 @@ function createLabelAndAppendPassword(generratedPassword) {
 
 }
 
+
+
+
+// Add Records function
+function addRecordfunc() {
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+// myHeaders.append("Access-Control-Allow-Origin", "*")
+
+var raw = JSON.stringify({
+  "email": "emirlerogluhalil@gmail.com",
+  "password": "password",
+  "domain": "glinkedin.com"
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("http://localhost:8080/addRecord", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+}
+
 createPassBut.addEventListener("click",generatePassword)
 copyPass.addEventListener("click",copyText)
+addRecord.addEventListener("click",addRecordfunc)
