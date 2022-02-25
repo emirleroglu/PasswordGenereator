@@ -28,12 +28,8 @@ func main() {
 	router.HandleFunc("/addRecord", addRecord).Methods("POST")
 	router.HandleFunc("/read", getRecord).Methods("POST")
 
-	//	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
-	//	originsOk := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
-	//	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
-	//corsObj := handlers.AllowedOrigins([]string{"*"})
 	corsOpts := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:8080"}, //you service is available and allowed for this base url
+		AllowedOrigins: []string{"chrome-extension://hgbjjpimmgnclibeebihmacaohedjhcg"}, //you service is available and allowed for this base url
 		AllowedMethods: []string{
 			http.MethodGet, //http methods for your app
 			http.MethodPost,
@@ -43,10 +39,7 @@ func main() {
 			http.MethodOptions,
 			http.MethodHead,
 		}})
-	// start server listen
-	// with error handling
-	//log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(router)))
-	//log.Fatal(http.ListenAndServe(":8080", handlers.CORS(corsObj)(router)))
+
 	http.ListenAndServe(":8080", corsOpts.Handler(router))
 
 }
