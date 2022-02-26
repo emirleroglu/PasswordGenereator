@@ -20,6 +20,7 @@ func WriteExcelInit() {
 	file.SetCellValue("Password", "E2", "Counter")
 	file.SetCellValue("Password", "E3", 2)
 	file.SetActiveSheet(index)
+	defer file.Close()
 	if err := file.SaveAs("secret.xlsx"); err != nil {
 		fmt.Println(err)
 	}
@@ -32,12 +33,8 @@ func ExcelAddRecord(email string, password string, domain string) (done bool) {
 		fmt.Println(err)
 		return false
 	}
-	defer func() {
-		if err := file.Close; err != nil {
-			fmt.Println(err)
-		}
+	defer file.Close()
 
-	}()
 	// find counter E3
 	cell, err := file.GetCellValue("Password", "E3")
 	if err != nil {
@@ -75,12 +72,7 @@ func ReadExcel(domain string) (email string, pass string) {
 		fmt.Println(err)
 		return "err", "err"
 	}
-	defer func() {
-		if err := file.Close; err != nil {
-			fmt.Println(err)
-		}
-
-	}()
+	defer file.Close()
 	result, err := file.SearchSheet("Password", domain)
 	if err != nil {
 		fmt.Println(err.Error)
