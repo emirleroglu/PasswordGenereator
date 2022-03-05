@@ -26,7 +26,7 @@ func WriteExcelInit() {
 	}
 }
 
-// function adding records to excel
+// function adding records to excel.
 func ExcelAddRecord(email string, password string, domain string) (done bool) {
 	file, err := excelize.OpenFile("secret.xlsx")
 	if err != nil {
